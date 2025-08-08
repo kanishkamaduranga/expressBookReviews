@@ -13,7 +13,7 @@ app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUni
 app.use("/customer/auth/*", function auth(req,res,next){
 
     const authHeader = req.headers.authorization;
-    
+
     if(!authHeader) return res.status(401).json({message : "Auth token not provided"});
     const token = authHeader.split(' ')[1];
 
@@ -32,7 +32,7 @@ app.use("/customer/auth/*", function auth(req,res,next){
     }
 });
  
-const PORT =5001;
+const PORT =5002;
 
 app.use("/customer", customer_routes);
 app.use("/", genl_routes);
