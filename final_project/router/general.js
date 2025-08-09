@@ -21,13 +21,27 @@ public_users.get('/isbn/:isbn',function (req, res) {
 
     const isbn = req.params.isbn;
 
-    res.status(200).json(books[isbn]);
+    return res.status(200).json(books[isbn]);
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+
+  const authorName = req.params.author; 
+  
+  if (!authorName) {
+    return res.status(400).json({ message: "Author name is required in URL" });
+  }
+    
+  let authorBooks = Object.values(books).filter(
+    book => book.author === authorName
+  );
+
+  if(authorBooks.length > 0) {
+    return res.status(200).json(authorBooks);
+  } else {
+    return res.status(404).json({message: "No books found for this author"}); 
+  }
 });
 
 // Get all books based on title
