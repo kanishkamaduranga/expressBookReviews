@@ -20,6 +20,11 @@ public_users.get('/',function (req, res) {
 public_users.get('/isbn/:isbn',function (req, res) {
 
     const isbn = req.params.isbn;
+    if(!isbn) {
+        return res.status(400).json({message: "ISBN is required in URL"});
+    }
+
+    if(book[isbn])
 
     return res.status(200).json(books[isbn]);
  });
