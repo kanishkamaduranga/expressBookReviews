@@ -18,15 +18,16 @@ public_users.get('/',function (req, res) {
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
+  const isbn = req.params.isbn;
+  if(!isbn) {
+    return res.status(400).json({message: "ISBN is required in URL"});
+  }
 
-    const isbn = req.params.isbn;
-    if(!isbn) {
-        return res.status(400).json({message: "ISBN is required in URL"});
-    }
-
-    if(book[isbn])
-
+  if(books[isbn]){
     return res.status(200).json(books[isbn]);
+  } else {
+    return res.status(404).json({message: "No books found for this isbn"});
+  }
  });
   
 // Get book details based on author
