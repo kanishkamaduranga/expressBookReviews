@@ -80,38 +80,60 @@ public_users.get('/author/:author',function (req, res) {
 
   const authorName = req.params.author; 
   
-  if (!authorName) {
-    return res.status(400).json({ message: "Author name is required in URL" });
-  }
-    
-  let authorBooks = Object.values(books).filter(
-    book => book.author === authorName
-  );
+    if (!authorName) {
+        return res.status(400).json({ message: "Author name is required in URL" });
+    }
 
-  if(authorBooks.length > 0) {
-    return res.status(200).json(authorBooks);
-  } else {
-    return res.status(404).json({message: "No books found for this author"}); 
-  }
+    new Promise((resolve, reject) => {
+
+        process.nextTick(() => {
+
+            let autherbooks = Object.values(books).filter(
+              book => book.author.trim() === authorName
+            );
+
+            if (autherbooks.length > 0) {
+                resolve(autherbooks);
+            } else {
+                reject( new Error("No books found for this author "));
+            }
+        });
+
+       // return res.status(200).json(authorBooks);
+    }).then( autherbooks => {
+        return res.status(200).json(autherbooks);
+    }).catch (error => {
+        return res.status(404).json({message: error.message})
+    });
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-      
+    
   const title = req.params.title.trim();
   if(!title) {
     return res.status(400).json({message: "Title is required in URL"});
   }
 
-  let machedBook = Object.values(books).filter(
-    book => book.title.toLowerCase().includes(title.toLowerCase())
-  );
+  new Promise((resolve, reject) => {
 
-  if(machedBook.length > 0) {
+    process.nextTick(() => {
+      let machedBook = Object.values(books).filter(
+        book => book.title.toLowerCase().includes(title.toLowerCase())
+      );
+
+      if(machedBook.length > 0) {
+        resolve(machedBook);
+      } else {
+        reject(new Error("No books found with this title"));
+      }
+    });
+  }).then ( machedBook => {
     return res.status(200).json(machedBook);
-  } else {
-    return res.status(404).json({message: "No books found with this title"});
-  }
+  }) .catch (error => {
+    return res.status(404).json({message: error.message});
+  });
+  
 });
 
 //  Get book review
